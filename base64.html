@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+<style>
+  body {
+    padding: 1em;
+}
+
+div {
+    padding: 0.25em;
+    margin: 0 auto;
+}
+
+textarea {
+    resize: vertical;
+    height: 400px;
+}
+
+button {
+    margin: 1em;
+}
+
+header {
+    margin: 0;
+    color: #333;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+.header h2 {
+    font-weight: 300;
+    color: #aaa;
+    padding: 0;
+    margin-top: 0;
+}
+</style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script>
+	  var Base64 = {
+    decode: function (str) {
+        return decodeURIComponent(escape(window.atob(str)));
+    },
+
+    encode: function (str) {
+        return window.btoa(unescape(encodeURIComponent(str)));
+    }
+};
+	</script>
+    <script>
+	  $(function() {
+	  $("#decode").click(function() {
+		var str = $("#input").val();
+		$("#output").val(Base64.decode(str));
+		});
+
+	  $("#encode").click(function() {
+		var str = $("#input").val();
+		$("#output").val(Base64.encode(str));
+		});
+	  $("#copy").click(function() {
+		//var str = $("#input").val();
+		let textarea = document.getElementById("output");
+		textarea.select();
+		document.execCommand("copy");
+		});
+  });
+	</script>
+  </head>
+  <body>
+	<div class="header">
+	  <h2>Giải mã và mã hoá văn bản</h2>
+	</div>
+
+	<div class="pure-form pure-g">
+	  <div class="pure-u-11-24">
+        <textarea id="input" class="pure-input-1" placeholder="Nhập văn bản..."></textarea>
+		<textarea id="output" class="pure-input-1" placeholder="Kết quả sẽ hiển thị ở đây..."></textarea>
+        <button type="button" id="decode" class="pure-button pure-button-primary">Giải Mã</button>
+        <button type="button" id="encode" class="pure-button pure-button-primary">Mã Hoá</button>
+
+		<button id="copy" type="button" class="pure-button pure-button-primary">Sao Chép</button>
+	  </div>
+	  
+	</div>
+  </body>
+</html>
