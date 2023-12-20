@@ -1,3 +1,5 @@
+video hướng dẫn
+<iframe width="560" height="315" src="https://www.youtube.com/embed/C2Cw4y0nw4E?si=6t1B3_shLM8uIcYa" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 ##sao chép mã javascript dưới đây
 ```
 javascript:var fullName = "Trần Tiến 💙";
