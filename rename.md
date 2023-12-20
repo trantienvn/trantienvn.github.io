@@ -1,5 +1,5 @@
 # Video hướng dẫn
-[![Alt text](https://img.youtube.com/vi/C2Cw4y0nw4E/0.jpg)](https://www.youtube.com/watch?v=C2Cw4y0nw4E)
+[![Alt text](https://img.youtube.com/vi/BVqcET31-d8/0.jpg)](https://www.youtube.com/watch?v=BVqcET31-d8)
 
 
 ## Sao chép mã javascript dưới đây và đổi tên theo như ý
