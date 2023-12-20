@@ -1,4 +1,4 @@
-#sao chép mã javascript dưới đây
+##sao chép mã javascript dưới đây
 ```
 javascript:var fullName = "Trần Tiến 💙";
 var firstName = "Tiến 💙";
