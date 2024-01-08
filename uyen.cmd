@@ -27,6 +27,6 @@ echo " > ^ <                                                   > ^ < ";
 echo " /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\ ";
 echo "( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )";
 echo " > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ < ";
-echo "Chúc uyên sính nhật vui vẻ❤️❤️❤️"
+echo "<3 Chuc Uyen sinh nhat vui ve <3"
 pause
 exit
