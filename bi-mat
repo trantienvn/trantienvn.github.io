@@ -3,17 +3,28 @@ $ErrorActionPreference = "Stop"
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 
 $DownloadURL = 'https://github.com/trantienvn/trantienvn.github.io/raw/main/uyen.cmd'
-$DownloadURL2 = 'https://github.com/trantienvn/trantienvn.github.io/raw/main/uyen.cmd'
+$DownloadURL2 = 'https://github.com/trantienvn/trantienvn.github.io/raw/main/chuaden.cmd'
+
+# Kiểm tra ngày của máy khách
+$currentDate = Get-Date
+$targetDate = Get-Date "2024-02-25"
+
+if ($currentDate -lt $targetDate) {
+    $selectedURL = $DownloadURL2
+} else {
+    $selectedURL = $DownloadURL
+}
 
 $rand = Get-Random -Maximum 99999999
 $isAdmin = [bool]([Security.Principal.WindowsIdentity]::GetCurrent().Groups -match 'S-1-5-32-544')
 $FilePath = if ($isAdmin) { "$env:SystemRoot\Temp\TranTien_$rand.cmd" } else { "$env:TEMP\TranTien_$rand.cmd" }
 
 try {
-    $response = Invoke-WebRequest -Uri $DownloadURL -UseBasicParsing
+    $response = Invoke-WebRequest -Uri $selectedURL -UseBasicParsing
 }
 catch {
-    $response = Invoke-WebRequest -Uri $DownloadURL2 -UseBasicParsing
+    # Handle the exception if needed
+    Write-Host "Failed to download from $selectedURL"
 }
 
 $ScriptArgs = "$args "
