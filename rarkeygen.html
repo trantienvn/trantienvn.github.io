@@ -111,8 +111,8 @@
     <div class="container">
         <h2>Đăng ký WinRAR</h2>
         <div class="form-group">
-            <label for="user">Người dùng:</label>
-            <input type="text" id="user" name="user" required>
+            <label for="raruser">Người dùng:</label>
+            <input type="text" id="raruser" name="raruser" required>
             <span id="warning" class="warning" style="display: none;"></span>
         </div>
         <div class="form-group">
@@ -133,7 +133,7 @@
 
     <script>
         function checkInputValidity() {
-            var inputElement = document.getElementById("user");
+            var inputElement = document.getElementById("raruser");
             var warningElement = document.getElementById("warning");
             var vietnamesePattern = /[^\x00-\x7F]+/; // Matches any characters outside of ASCII range (Vietnamese characters)
 
@@ -188,8 +188,8 @@
         }
 
         // Add event listener to input fields to move focus or submit form on Enter key press
-        document.getElementById("user").addEventListener("input", checkInputValidity);
-        document.getElementById("user").addEventListener("keypress", moveFocusOrSubmit);
+        document.getElementById("raruser").addEventListener("input", checkInputValidity);
+        document.getElementById("raruser").addEventListener("keypress", moveFocusOrSubmit);
         document.getElementById("lic").addEventListener("input", checkInputValidity2);
         document.getElementById("lic").addEventListener("keypress", moveFocusOrSubmit);
 
