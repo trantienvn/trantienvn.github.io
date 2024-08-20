@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Web Tạo Mã QR</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        #qrcode {
+            margin-bottom: 20px;
+        }
+
+        input {
+            margin: 10px 0;
+            padding: 10px;
+            width: 300px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        /* Ẩn hình ảnh QR ban đầu */
+        #qrImage {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tạo Mã QR</h1>
+    <div id="qrcode">
+        <img id="qrImage" src="" alt="Mã QR sẽ xuất hiện ở đây" />
+    </div>
+
+    <input type="text" id="studentID" placeholder="Nhập mã sinh viên" />
+    <input type="text" id="activityCode" placeholder="Nhập mã hoạt động" />
+    <button onclick="generateQRCode()">Submit</button>
+
+    <script>
+        // Hàm để lấy tham số từ URL
+        function getParameterByName(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        function base64Encode(text) {
+            return btoa(text);
+        }
+
+        function generateQRCode() {
+            // Lấy mã sinh viên từ URL hoặc từ input nếu không có trong URL
+            var studentID = getParameterByName('studentID') || document.getElementById("studentID").value;
+            var activityCode = document.getElementById("activityCode").value;
+
+            if (studentID && activityCode) {
+                // Lấy thời gian hiện tại và định dạng thành chuỗi ISO
+                var currentTime = new Date().toISOString();
+
+                // Tạo nội dung theo định dạng yêu cầu
+                var text = `${studentID}][${currentTime}][${activityCode}`;
+
+                // Mã hóa Base64 2 lớp
+                var encodedText = base64Encode(base64Encode(text));
+
+                // Tạo URL cho mã QR từ API với nội dung đã mã hóa
+                var qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodedText}`;
+
+                // Đặt URL vào src của hình ảnh để hiển thị mã QR
+                var qrImage = document.getElementById("qrImage");
+                qrImage.src = qrUrl;
+                console.log(text);
+
+                // Hiển thị hình ảnh mã QR
+                qrImage.style.display = "block";
+            } else {
+                alert("Vui lòng nhập mã hoạt động.");
+            }
+        }
+
+        // Lấy mã sinh viên từ URL và tự động điền vào input nếu có
+        window.onload = function() {
+            var studentIDFromURL = getParameterByName('studentID');
+            if (studentIDFromURL) {
+                document.getElementById("studentID").value = studentIDFromURL;
+            }
+        };
+    </script>
+</body>
+</html>
