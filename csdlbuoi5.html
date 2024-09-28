@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiển thị câu hỏi từ JSON</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            margin: 20px;
+        }
+
+        .question-container {
+            margin-bottom: 25px;
+        }
+
+        .question-container h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .answer-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .answer-option:hover {
+            border-color: #1a73e8;
+            background-color: #f1f3f4;
+        }
+
+        .answer-option label {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .answer-option input[type="radio"] {
+            margin-right: 15px;
+        }
+
+        .answer-letter {
+            font-weight: 600;
+            font-size: 18px;
+            margin-right: 15px;
+        }
+
+        button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: #135ba1;
+        }
+
+        #button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="question-container">
+        <h2 id="question-direction"></h2>
+        <div id="answer-options"></div>
+    </div>
+
+    <div id="button-container">
+        <button id="prev-question">Câu trước</button>
+        <button id="next-question">Câu sau</button>
+    </div>
+</div>
+<script>
+    
+    const test = [
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span>Giả sử có hai tập phụ thuộc hàm F và G cùng xác định trên tập thuộc tính U. F và G được coi là tương đương nếu:<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span>F và G có cùng số lượng phụ thuộc hàm<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span>F và G có cùng tập thuộc tính<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span>F<sup>+<\/sup> = G<sup>+&nbsp;<\/sup>&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span>F là phủ dư thừa của G<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 1,
+            "group_id": 0,
+            "skill": null,
+            "id": 12211,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span>Khi nào một phụ thuộc hàm trong tập F được coi là dư thừa?<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span>Khi phụ thuộc hàm đó không thể loại bỏ khỏi tập F mà vẫn giữ nguyên ý nghĩa của F<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span>Khi F loại bỏ phụ thuộc hàm đó mà vẫn tương đương với chính F<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span>Khi vế phải của phụ thuộc hàm chứa nhiều hơn một thuộc tính<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span>Khi vế trái của phụ thuộc hàm không bao gồm tất cả các thuộc tính của tập thuộc tính U<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 2,
+            "group_id": 0,
+            "skill": null,
+            "id": 12344,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span>Bài toán thành viên đặt ra câu hỏi gì?<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span>Xác định xem tập phụ thuộc hàm F có rỗng hay không<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span>Kiểm tra xem một phụ thuộc hàm X → Y có thuộc F<sup>+<\/sup> hay không<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span>Xác định xem một tập thuộc tính U có chứa một thuộc tính nào đó không<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span>Kiểm tra xem một tập phụ thuộc hàm F có tương đương với G hay không<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 2,
+            "group_id": 0,
+            "skill": null,
+            "id": 12345,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span>Khi F là phủ của G, điều này có nghĩa là gì?<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span>F có nhiều phụ thuộc hàm hơn G<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span>F<sup>+<\/sup> và G<sup>+<\/sup> tương đương nhau<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span>F là một tập con của G<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span>G không chứa phụ thuộc hàm nào có trong F<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 2,
+            "group_id": 0,
+            "skill": null,
+            "id": 12347,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span>Trong trường hợp nào một tập phụ thuộc hàm G không thể được coi là phủ của F?<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span>Khi G<sup>+<\/sup> không tương đương với F<sup>+<\/sup><\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span>Khi G có cùng số lượng phụ thuộc hàm như F<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span>Khi G có ít phụ thuộc hàm hơn F<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span>Khi G và F chứa các phụ thuộc hàm giống nhau<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 2,
+            "group_id": 0,
+            "skill": null,
+            "id": 12348,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span>Trong quá trình đưa tập phụ thuộc hàm F về phủ tối thiểu, nếu một phụ thuộc hàm X → A bị loại bỏ, điều này có nghĩa là gì?<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span>F<sup>+<\/sup> không thay đổi khi loại bỏ X → A<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span>F<sup>+<\/sup> thay đổi khi loại bỏ X → A<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span>X → A là phụ thuộc hàm quan trọng trong F<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span>X → A không thể loại bỏ khỏi F<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 2,
+            "group_id": 0,
+            "skill": null,
+            "id": 12350,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span>Cho tập phụ thuộc hàm F={A→B, B→C, A→C}. Để F là phủ tối thiểu, ta cần làm gì?<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span>Loại bỏ phụ thuộc hàm B→C khỏi F<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span>Loại bỏ phụ thuộc hàm A→C khỏi F<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span>Thêm phụ thuộc hàm AB→C vào F<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span>Giữ nguyên tập F như hiện tại<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 3,
+            "group_id": 0,
+            "skill": null,
+            "id": 12352,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span>Cho tập phụ thuộc hàm F={A→B, AB→C, B→D}. Để F trở thành phủ tối thiểu, ta cần thực hiện điều gì?<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span>Loại bỏ phụ thuộc hàm AB→ C<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span>Thêm phụ thuộc hàm A→D vào F<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span>Loại bỏ các thuộc tính dư thừa B ở vế trái của phụ thuộc hàm AB→C&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span>Giữ nguyên tập F như hiện tại<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 3,
+            "group_id": 0,
+            "skill": null,
+            "id": 12353,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span>Trong tập phụ thuộc hàm&nbsp;<\/span><span style=\"color:black;\"><span lang=\"NO-BOK\">F = {<\/span><\/span><span lang=\"NO-BOK\"> DE<\/span><span>→<\/span><span lang=\"NO-BOK\">A, A<\/span><span>→<\/span><span lang=\"NO-BOK\">B, AB<\/span><span>→<\/span><span lang=\"NO-BOK\">C, BD<\/span><span>→<\/span><span lang=\"NO-BOK\">B, BD<\/span><span>→<\/span><span lang=\"NO-BOK\">C}. Phụ thuộc hàm nào là dư thừa?<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span lang=\"NO-BOK\">BD<\/span><span>→<\/span><span lang=\"NO-BOK\">B&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span lang=\"NO-BOK\">A<\/span><span>→<\/span><span lang=\"NO-BOK\">B<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span lang=\"NO-BOK\">BD<\/span><span>→<\/span><span lang=\"NO-BOK\">C<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span lang=\"NO-BOK\">AB<\/span><span>→<\/span><span lang=\"NO-BOK\">C<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 3,
+            "group_id": 0,
+            "skill": null,
+            "id": 12358,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p class=\"MsoNormal\"><span>Trong tập phụ thuộc hàm&nbsp;<\/span><span style=\"color:black;\"><span lang=\"NO-BOK\">F = {<\/span><\/span><span lang=\"NO-BOK\"> AD<\/span><span>→<\/span><span lang=\"NO-BOK\">B, B<\/span><span>→<\/span><span lang=\"NO-BOK\">E, AE<\/span><span>→<\/span><span lang=\"NO-BOK\">C, AE<\/span><span>→<\/span><span lang=\"NO-BOK\">E, BE<\/span><span>→<\/span><span lang=\"NO-BOK\">C }. Phụ thuộc hàm nào là dư thừa?<\/span><o:p><\/o:p><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span lang=\"NO-BOK\">AE<\/span><span>→<\/span><span lang=\"NO-BOK\">C<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span lang=\"NO-BOK\">BE<\/span><span>→<\/span><span lang=\"NO-BOK\">C&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span lang=\"NO-BOK\">AE<\/span><span>→<\/span><span lang=\"NO-BOK\">E&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span lang=\"NO-BOK\">Không có phụ thuộc hàm dư thừa<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 3,
+            "group_id": 0,
+            "skill": null,
+            "id": 12373,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span>Cho quan hệ DIEMTHI{MaSinhVien, MaMon, Diem} và F={ MaSinhVien, MaMon → Diem}. Dạng chuẩn cao nhất của quan hệ DIEMTHI là gì?<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span>1NF<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span>2NF<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span>BCNF<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span>Không đạt dạng chuẩn nào<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 2,
+            "group_id": 0,
+            "skill": null,
+            "id": 12379,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p class=\"MsoNormal\"><span lang=\"NO-BOK\">Cho lược đồ quan hệ r(U,F) với U={ABCDEL}; F={ AD<\/span><span>→<\/span><span lang=\"NO-BOK\">B, B<\/span><span>→<\/span><span lang=\"NO-BOK\">E, AE<\/span><span>→<\/span><span lang=\"NO-BOK\">CE, BE<\/span><span>→<\/span><span lang=\"NO-BOK\">C}.&nbsp;Chuẩn hóa r(U,F) về dạng chuẩn 3NF, ta sẽ được những lược đồ con nào?<\/span><o:p><\/o:p><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p class=\"MsoNormal\"><span lang=\"NO-BOK\">r<sub>1<\/sub>(ADB), r<sub>2<\/sub>(BEC), r<sub>3<\/sub>(AEC)<\/span><o:p><\/o:p><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(ADL), r<sub>2<\/sub>(ADB), r<sub>3<\/sub>(BEC), r<sub>4&nbsp;<\/sub>(AEC)&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p class=\"MsoNormal\"><span lang=\"NO-BOK\">r<sub>1<\/sub>(ADL), r<sub>2<\/sub>(BE), r<sub>3<\/sub>(AEC), r<sub>4&nbsp;<\/sub>(BEC)&nbsp;<\/span><o:p><\/o:p><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p class=\"MsoNormal\"><span lang=\"NO-BOK\">r<sub>1<\/sub>(ADL), r<sub>2<\/sub>(ADB), r<sub>3<\/sub>(BE), r<sub>4&nbsp;<\/sub>(AEC), r<sub>5&nbsp;<\/sub>(BEC)<\/span><o:p><\/o:p><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 3,
+            "group_id": 0,
+            "skill": null,
+            "id": 12391,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p class=\"MsoNormal\"><span lang=\"NO-BOK\">Cho lược đồ quan hệ r(U,F) với U={ABCDEL}; F={ED<\/span><span>→<\/span><span lang=\"NO-BOK\">C, C<\/span><span>→<\/span><span lang=\"NO-BOK\">B, BE<\/span><span>→<\/span><span lang=\"NO-BOK\">AB, BC<\/span><span>→<\/span><span lang=\"NO-BOK\">A}.&nbsp;Chuẩn hóa r(U,F) về dạng chuẩn 3NF, ta sẽ được những lược đồ con nào?<\/span><o:p><\/o:p><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(ACB), r<sub>2<\/sub>(BDE), r<sub>3<\/sub>(CDE)<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(DEL), r<sub>2<\/sub>(EDC), r<sub>3<\/sub>(CBA), r<sub>4&nbsp;<\/sub>(BEA)&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(DEL), r<sub>2<\/sub>(EDC), r<sub>3<\/sub>(CB), r<sub>4&nbsp;<\/sub>(BEA)<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(DEL), r<sub>2<\/sub>(EDC), r<sub>3<\/sub>(CB), r<sub>4&nbsp;<\/sub>(BEA), r<sub>5&nbsp;<\/sub>(BCA)<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 3,
+            "group_id": 0,
+            "skill": null,
+            "id": 12392,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p class=\"MsoNormal\"><span lang=\"NO-BOK\">Cho lược đồ quan hệ r(U,F) với U={ABCDEL}; F={ AC<\/span><span>→<\/span><span lang=\"NO-BOK\">B, B<\/span><span>→<\/span><span lang=\"NO-BOK\">D, CD<\/span><span>→<\/span><span lang=\"NO-BOK\">ED, BD<\/span><span>→<\/span><span lang=\"NO-BOK\">E }.&nbsp;Chuẩn hóa r(U,F) về dạng chuẩn 3NF, ta sẽ được những lược đồ con nào?<\/span><o:p><\/o:p><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p class=\"MsoNormal\"><span lang=\"NO-BOK\">r<sub>1<\/sub>(ACB), r<sub>2<\/sub>(BDE), r<sub>3<\/sub>(CDE)<\/span><o:p><\/o:p><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(ADL), r<sub>2<\/sub>(ACB), r<sub>3<\/sub>(BDE), r<sub>4&nbsp;<\/sub>(CDE)<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(ACL), r<sub>2<\/sub>(ACB), r<sub>3<\/sub>(BDE), r<sub>4&nbsp;<\/sub>(CDE)&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(ACL), r<sub>2<\/sub>(ACB), r<sub>3<\/sub>(BD), r<sub>4&nbsp;<\/sub>(CDE), r<sub>5&nbsp;<\/sub>(BDE)<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 3,
+            "group_id": 0,
+            "skill": null,
+            "id": 12394,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p class=\"MsoNormal\"><span lang=\"NO-BOK\">Cho lược đồ quan hệ r(U,F) với U={ABCDEL}; F={AB<\/span><span>→<\/span><span lang=\"NO-BOK\">E, E<\/span><span>→<\/span><span lang=\"NO-BOK\">D, ED<\/span><span>→<\/span><span lang=\"NO-BOK\">C, AD<\/span><span>→<\/span><span lang=\"NO-BOK\">DC}.&nbsp;Chuẩn hóa r(U,F) về dạng chuẩn 3NF, ta sẽ được những lược đồ con nào?<\/span><o:p><\/o:p><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p class=\"MsoNormal\"><span lang=\"NO-BOK\">r<sub>1<\/sub>(ABE), r<sub>2<\/sub>(EDC), r<sub>3<\/sub>(ADC)<\/span><o:p><\/o:p><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(ABL), r<sub>2<\/sub>(ABE), r<sub>3<\/sub>(EDC), r<sub>4&nbsp;<\/sub>(ADC)&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(AEL), r<sub>2<\/sub>(ABE), r<sub>3<\/sub>(EDC), r<sub>4&nbsp;<\/sub>(ADC) &nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p class=\"MsoNormal\"><span lang=\"NO-BOK\">r<sub>1<\/sub>(AEL), r<sub>2<\/sub>(AEB), r<sub>3<\/sub>(EDC), r<sub>4&nbsp;<\/sub>(ADC), r<sub>5&nbsp;<\/sub>(ED)<\/span><o:p><\/o:p><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 3,
+            "group_id": 0,
+            "skill": null,
+            "id": 12398,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span>Cho lược đồ quan hệ r(U, F), với U = (ABC) và F = {A → B, B → C, A → C}. Phát biểu nào sau đây đúng về các phụ thuộc hàm trong tập F?<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span>F là lớp phủ không dư thừa<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span>A → B là phụ thuộc hàm dư thừa<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span>A → C là phụ thuộc hàm dư thừa&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span>B → C là phụ thuộc hàm dư thừa<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 2,
+            "group_id": 0,
+            "skill": null,
+            "id": 12343,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span>Cho tập phụ thuộc hàm F = {A → B, B → C, A → C}. Loại bỏ phụ thuộc hàm nào từ F để biến nó thành một phủ không dư thừa?<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span>A → B<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span>B → C<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span>A → C&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p class=\"MsoNormal\"><span>Không thể loại bỏ phụ thuộc hàm nào<\/span><o:p><\/o:p><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 2,
+            "group_id": 0,
+            "skill": null,
+            "id": 12349,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span>Trong tập phụ thuộc hàm&nbsp;<\/span><span style=\"color:black;\"><span lang=\"NO-BOK\">F = {<\/span><\/span><span lang=\"NO-BOK\"> AD<\/span><span>→<\/span><span lang=\"NO-BOK\">B, B<\/span><span>→<\/span><span lang=\"NO-BOK\">E, AE<\/span><span>→<\/span><span lang=\"NO-BOK\">C, BE<\/span><span>→<\/span><span lang=\"NO-BOK\">C }. Phụ thuộc hàm nào có thuộc tính dư thừa?<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span lang=\"NO-BOK\">BE<\/span><span>→<\/span><span lang=\"NO-BOK\">C&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span lang=\"NO-BOK\">AD<\/span><span>→<\/span><span lang=\"NO-BOK\">B&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span lang=\"NO-BOK\">AE<\/span><span>→<\/span><span lang=\"NO-BOK\">C<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span lang=\"NO-BOK\">Không có phụ thuộc hàm nào dư thừa thuộc tính<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 3,
+            "group_id": 0,
+            "skill": null,
+            "id": 12375,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p class=\"MsoNormal\"><span lang=\"NO-BOK\">Cho lược đồ quan hệ r(U,F) với U={ABCDE}; F={DE<\/span><span>→<\/span><span lang=\"NO-BOK\">A, D<\/span><span>→<\/span><span lang=\"NO-BOK\">B, AB<\/span><span>→<\/span><span lang=\"NO-BOK\">C, BD<\/span><span>→<\/span><span lang=\"NO-BOK\">BC}.&nbsp;<\/span><span>Dạng chuẩn cao nhất của r(U,F) là gì?<\/span><o:p><\/o:p><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span>1NF<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span>2NF<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span>3NF<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span>BCNF<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 2,
+            "group_id": 0,
+            "skill": null,
+            "id": 12381,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span lang=\"NO-BOK\">Cho lược đồ quan hệ r(U,F) với U={ABCDEL}; phủ tối thiểu F={&nbsp;CD<\/span><span>→<\/span><span lang=\"NO-BOK\">E, E<\/span><span>→<\/span><span lang=\"NO-BOK\">A, AE<\/span><span>→<\/span><span lang=\"NO-BOK\">B, AC<\/span><span>→<\/span><span lang=\"NO-BOK\">AB }. Chuẩn hóa r(U,F) về dạng chuẩn 3NF, ta sẽ được những lược đồ con nào?<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(CDE), r<sub>2<\/sub>(EA), r<sub>3<\/sub>(AEB), r<sub>4&nbsp;<\/sub>(ACAB)&nbsp;&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(CDE), r<sub>2<\/sub>(EA), r<sub>3<\/sub>(AEB), r<sub>4&nbsp;<\/sub>(ACB)&nbsp;&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(CDL), r<sub>2<\/sub>(CDE), r<sub>3<\/sub>(EAB), r<sub>4&nbsp;<\/sub>(ACB)&nbsp;&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(CDL), r<sub>2<\/sub>(CDE), r<sub>3<\/sub>(EA), r<sub>4&nbsp;<\/sub>(AEB), r<sub>5&nbsp;<\/sub>(ACB)<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 3,
+            "group_id": 0,
+            "skill": null,
+            "id": 12388,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p class=\"MsoNormal\"><span lang=\"NO-BOK\">Cho lược đồ quan hệ r(U,F) với U={ABCDEL}; F={ AB<\/span><span>→<\/span><span lang=\"NO-BOK\">E, E<\/span><span>→<\/span><span lang=\"NO-BOK\">C, CE<\/span><span>→<\/span><span lang=\"NO-BOK\">D, AC<\/span><span>→<\/span><span lang=\"NO-BOK\">CD}.&nbsp;Chuẩn hóa r(U,F) về dạng chuẩn 3NF, ta sẽ được những lược đồ con nào?<\/span><o:p><\/o:p><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(ABE), r<sub>2<\/sub>(EC), r<sub>3<\/sub>(ECD), r<sub>4&nbsp;<\/sub>(ACD)<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p class=\"MsoNormal\"><span lang=\"NO-BOK\">r<sub>1<\/sub>(ABL), r<sub>2<\/sub>(ABE), r<sub>3<\/sub>(EC), r<sub>4&nbsp;<\/sub>(ACD)<\/span><o:p><\/o:p><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p class=\"MsoNormal\"><span lang=\"NO-BOK\">r<sub>1<\/sub>(ABL), r<sub>2<\/sub>(ABE), r<sub>3<\/sub>(EC), r<sub>4&nbsp;<\/sub>(CED), r<sub>5&nbsp;<\/sub>(ACD)<\/span><o:p><\/o:p><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(ABL), r<sub>2<\/sub>(ABE), r<sub>3<\/sub>(ECD), r<sub>4&nbsp;<\/sub>(ACD)&nbsp;<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 3,
+            "group_id": 0,
+            "skill": null,
+            "id": 12390,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span>Tập phụ thuộc hàm F được gọi là phủ tối thiểu nếu thoả mãn những điều kiện nào sau đây?<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span>Vế phải là thuộc tính đơn (1)<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span>Không tồn tại các phụ thuộc hàm dư thừa (2)<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span>Không tồn tại các thuộc tính dư thừa ở vế trái các phụ thuộc hàm (3)<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span>Tất cả các phương án (1), (2), (3) đều đúng&nbsp;<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 1,
+            "group_id": 0,
+            "skill": null,
+            "id": 12215,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span>Tập phụ thuộc hàm F = {A → B, B → C, A → C} có phải là phủ không dư thừa không?<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span>Có, vì mỗi phụ thuộc hàm trong F là cần thiết<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span>Không, vì A → C là phụ thuộc hàm thừa<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span>Có, vì A → C không thể suy ra từ các phụ thuộc hàm khác<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span>Không, vì B → C là phụ thuộc hàm thừa<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 2,
+            "group_id": 0,
+            "skill": null,
+            "id": 12346,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span>&nbsp;Điều kiện nào sau đây KHÔNG phải là điều kiện để tập phụ thuộc hàm F được gọi là tối thiểu?<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span>Vế phải của mỗi phụ thuộc hàm trong F chỉ chứa một thuộc tính<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span>F không có phụ thuộc hàm dư thừa<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span>F không có thuộc tính dư thừa ở vế trái của bất kỳ phụ thuộc hàm nào<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span>F phải chứa ít nhất một phụ thuộc hàm với nhiều thuộc tính ở vế phải<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 2,
+            "group_id": 0,
+            "skill": null,
+            "id": 12351,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span>Trong tập phụ thuộc hàm&nbsp;<\/span><span style=\"color:black;\"><span lang=\"NO-BOK\">F = {<\/span><\/span><span lang=\"NO-BOK\"> DE<\/span><span>→<\/span><span lang=\"NO-BOK\">A, A<\/span><span>→<\/span><span lang=\"NO-BOK\">B, AB<\/span><span>→<\/span><span lang=\"NO-BOK\">C, BD<\/span><span>→<\/span><span lang=\"NO-BOK\">C }. Phụ thuộc hàm nào có thuộc tính dư thừa?<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span style=\"color:black;\"><span lang=\"NO-BOK\">DE&nbsp;<\/span><\/span><span>→<\/span><span style=\"color:black;\"> <span lang=\"NO-BOK\">A<\/span><\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span style=\"color:black;\"><span lang=\"NO-BOK\">BD&nbsp;<\/span><\/span><span>→<\/span><span style=\"color:black;\"> <span lang=\"NO-BOK\">C<\/span><\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span style=\"color:black;\"><span lang=\"NO-BOK\">AB&nbsp;<\/span><\/span><span>→<\/span><span style=\"color:black;\"> <span lang=\"NO-BOK\">C&nbsp;<\/span><\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span lang=\"NO-BOK\">Không có phụ thuộc hàm nào dư thừa thuộc tính<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 3,
+            "group_id": 0,
+            "skill": null,
+            "id": 12362,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p><span>Trong tập phụ thuộc hàm&nbsp;<\/span><span style=\"color:black;\"><span lang=\"NO-BOK\">F = {<\/span><\/span><span lang=\"NO-BOK\"> AB<\/span><span>→<\/span><span lang=\"NO-BOK\">E, E<\/span><span>→<\/span><span lang=\"NO-BOK\">C, CE<\/span><span>→<\/span><span lang=\"NO-BOK\">D, AC<\/span><span>→<\/span><span lang=\"NO-BOK\">C, AC<\/span><span>→<\/span><span lang=\"NO-BOK\">D }. Phụ thuộc hàm nào là dư thừa?<\/span><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span lang=\"NO-BOK\">CE<\/span><span>→<\/span><span lang=\"NO-BOK\">D<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span lang=\"NO-BOK\">AB<\/span><span>→<\/span><span lang=\"NO-BOK\">E<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span lang=\"NO-BOK\">AC<\/span><span>→<\/span><span lang=\"NO-BOK\">C&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span lang=\"NO-BOK\">Không có phụ thuộc hàm dư thừa<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 3,
+            "group_id": 0,
+            "skill": null,
+            "id": 12364,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p class=\"MsoNormal\"><span lang=\"NO-BOK\">Cho lược đồ quan hệ r(U,F) với U={ABCDE}; F={DE<\/span><span>→<\/span><span lang=\"NO-BOK\">A, A<\/span><span>→<\/span><span lang=\"NO-BOK\">B, AB<\/span><span>→<\/span><span lang=\"NO-BOK\">C, BD<\/span><span>→<\/span><span lang=\"NO-BOK\">BC}.&nbsp;Chuẩn hóa r(U,F) về dạng chuẩn 3NF, ta sẽ được những lược đồ con nào?<\/span><o:p><\/o:p><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(DEA), r<sub>2<\/sub>(ABC), r<sub>3<\/sub>(BDC)&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(DEA), r<sub>2<\/sub>(AB), r<sub>3<\/sub>(ABC), r<sub>4&nbsp;<\/sub>(BDC)<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(DEA), r<sub>2<\/sub>(AB), r<sub>3<\/sub>(ABC), r<sub>4&nbsp;<\/sub>(BDC), r<sub>5&nbsp;<\/sub>(BDB)<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p><span lang=\"NO-BOK\">&nbsp;r<sub>1<\/sub>(DEA), r<sub>2<\/sub>(ABC), r<sub>3<\/sub>(AC), r<sub>4&nbsp;<\/sub>(BDC)<\/span><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 3,
+            "group_id": 0,
+            "skill": null,
+            "id": 12389,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        },
+        {
+            "code": "",
+            "question_type": "radio",
+            "shuff": null,
+            "part": 0,
+            "question_direction": "<p class=\"MsoNormal\"><span lang=\"NO-BOK\">Cho lược đồ quan hệ r(U,F) với U={ABCDEL}; F={AE<\/span><span>→<\/span><span lang=\"NO-BOK\">B, B<\/span><span>→<\/span><span lang=\"NO-BOK\">C, BC<\/span><span>→<\/span><span lang=\"NO-BOK\">D, EC<\/span><span>→<\/span><span lang=\"NO-BOK\">DC}.&nbsp;Chuẩn hóa r(U,F) về dạng chuẩn 3NF, ta sẽ được những lược đồ con nào?<\/span><o:p><\/o:p><\/p>",
+            "media": null,
+            "answer_option": [
+                {
+                    "id": "1",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(AEB), r<sub>2<\/sub>(BCD), r<sub>3<\/sub>(ECD)<\/span><\/p>"
+                },
+                {
+                    "id": "2",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(ADL), r<sub>2<\/sub>(AEB), r<sub>3<\/sub>(BCD), r<sub>4&nbsp;<\/sub>(ECD)<\/span><\/p>"
+                },
+                {
+                    "id": "3",
+                    "value": "<p><span lang=\"NO-BOK\">r<sub>1<\/sub>(AEL), r<sub>2<\/sub>(AEB), r<sub>3<\/sub>(BCD), r<sub>4&nbsp;<\/sub>(ECD)&nbsp;<\/span><\/p>"
+                },
+                {
+                    "id": "4",
+                    "value": "<p class=\"MsoNormal\"><span lang=\"NO-BOK\">r<sub>1<\/sub>(AEL), r<sub>2<\/sub>(AEB), r<sub>3<\/sub>(BCD), r<sub>4&nbsp;<\/sub>(ECD), r<sub>5&nbsp;<\/sub>(BDE)<\/span><o:p><\/o:p><\/p>"
+                }
+            ],
+            "question_number": 0,
+            "cdr": 3,
+            "group_id": 0,
+            "skill": null,
+            "id": 12396,
+            "config": {
+                "cols": 2,
+                "invertedAnswer": true
+            }
+        }
+    ]
+    
+</script>
+
+<script>
+    let questions = [];
+    let currentQuestionIndex = 0;
+
+    // Chữ cái đại diện cho các đáp án
+    const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+    // Hàm để hiển thị câu hỏi
+    function displayQuestion(index) {
+        const question = questions[index];
+        const questionDirectionDiv = document.getElementById('question-direction');
+        const answerOptionsDiv = document.getElementById('answer-options');
+        
+        // Hiển thị câu hỏi
+        questionDirectionDiv.innerHTML = `Câu ${index + 1} : ${question.question_direction}`;
+
+        // Hiển thị các đáp án
+        answerOptionsDiv.innerHTML = '';
+        question.answer_option.forEach((option, i) => {
+            const optionElement = document.createElement('div');
+            optionElement.classList.add('answer-option');
+            optionElement.innerHTML = `
+                <label>
+                    <span class="answer-letter">${letters[i]}.</span>
+                    <input type="radio" name="question_${question.id}" value="${option.id}">
+                    ${option.value}
+                </label>
+            `;
+            answerOptionsDiv.appendChild(optionElement);
+        });
+
+        // Cập nhật trạng thái nút
+        document.getElementById('prev-question').disabled = (currentQuestionIndex === 0);
+        document.getElementById('next-question').disabled = (currentQuestionIndex === questions.length - 1);
+    }
+
+    // Lấy dữ liệu từ tệp JSON
+    function loadQuestions() {
+        test.forEach(item => {
+            questions.push(item);
+        });
+        displayQuestion(currentQuestionIndex);
+    }
+
+    // Xử lý sự kiện nút "Câu trước" và "Câu sau"
+    document.getElementById('prev-question').addEventListener('click', function() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            displayQuestion(currentQuestionIndex);
+        }
+    });
+
+    document.getElementById('next-question').addEventListener('click', function() {
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            displayQuestion(currentQuestionIndex);
+        }
+    });
+
+    // Gọi hàm loadQuestions để tải dữ liệu JSON khi trang được tải
+    window.onload = loadQuestions;
+</script>
+
+</body>
+</html>
