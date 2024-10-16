@@ -77,7 +77,25 @@
                 document.getElementById('reloadBtn').style.display = 'block';
                 const jsonData = JSON.parse(jsonInput.value);
                 const questions = jsonData.data[0].test;
+                // nếu không chứa trường test thì lấy mảng data hiển thị điểm mỗi lần làm
+                if (questions === undefined) {
+                    const data = jsonData.data;
+                    data.forEach((item, index) => {
+                        const questionDiv = document.createElement('div');
+                        questionDiv.innerHTML = `
+                            <p>Điểm lần ${index + 1}: ${item.point/10} ${item.updated_by===0?`Lỗi đề (Không tính điểm)`:`(${item.passed===1?`Đã qua`:`Chưa qua`})`}</p>
+                        `;
+                        result.appendChild(questionDiv);
+                    });
+                } else {
+                    // hiển thị các câu hỏi và đáp án
+                    displayQuestions(questions);
+                }
+            });
+
+            function displayQuestions(questions) {
                 result.innerHTML = '';
+
 
                 questions.forEach((question, index) => {
                     const questionDiv = document.createElement('div');
@@ -91,7 +109,7 @@
                     `;
                     result.appendChild(questionDiv);
                 });
-            });
+            };
             function reloadPage() {
                 location.reload();
             }
