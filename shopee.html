@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi-VN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Link Shopee</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    #shopeeLinks {
+      max-width: 600px;
+      margin: 20px auto;
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #fff;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      word-break: break-word;
+    }
+
+    .item:hover {
+      background-color: #f0f0f0;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .item a {
+      text-decoration: none;
+      color: #007bff;
+      font-size: 16px;
+      font-weight: bold;
+      flex-grow: 1;
+      margin-right: 10px;
+    }
+
+    .item a:hover {
+      text-decoration: underline;
+    }
+
+    .item button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
+    .item button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Danh sách link Shopee</h1>
+  <div id="shopeeLinks">
+  </div>
+<script src="tien.js"></script>
+  <script>
+    const shopeeLinksDiv = document.getElementById('shopeeLinks');
+
+    shopee.forEach((link) => {
+      const linkElement = document.createElement('div');
+      linkElement.className = 'item';
+      linkElement.innerHTML = `
+        <a href="${link}" target="_blank">${link}</a>
+        <button onclick="window.open('${link}', '_blank')">Mở</button>
+      `;
+      shopeeLinksDiv.appendChild(linkElement);
+    });
+  </script>
+</body>
+
+</html>
