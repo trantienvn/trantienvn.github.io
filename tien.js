@@ -7,5 +7,13 @@ const shopee = [
     "https://s.shopee.vn/AUc2auNupF",
     "https://s.shopee.vn/3q58efqfj6",
     "https://s.shopee.vn/AKIcOdS8qw",
-    "https://s.shopee.vn/9f2vbRTOHY"
-]
+    "https://s.shopee.vn/9f2vbRTOHY",
+    "https://s.shopee.vn/9f38iE4MUI",
+    "https://s.shopee.vn/10lAOH2yP7",
+    "https://s.shopee.vn/1qKHNmi3YO",
+    "https://s.shopee.vn/2qCoZbWKou",
+    "https://s.shopee.vn/3ApeyUfnVn",
+    "https://s.shopee.vn/6ATGY1hAjs",
+    "https://s.shopee.vn/6ATGY2PAaD",
+    "https://s.shopee.vn/VotndFg3J"
+];
