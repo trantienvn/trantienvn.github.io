@@ -71,15 +71,10 @@
     <div id="result"></div>
     <button id="reloadBtn" onclick="reloadPage()">Làm lại</button>
     <!-- thêm script để xử lý -->
-    <script src="tien.js"></script>
     <!-- Xử lý đề sao cho hiển thị các câu hỏi và các lựa chọn trong mảng json-->
     <!-- chuỗi json giống như trên, thêm đánh số câu: Câu 1... và có tùy trọn ABCD-->
     <script>
-        function openLink() {
-            // chọn link ngẫu nhiên trong mảng shopee
-            let randomLink = shopee[Math.floor(Math.random() * shopee.length - 1)];
-            window.open(randomLink, '_blank');
-        }
+
         const getDeBtn = document.getElementById('getDeBtn');
         const jsonInput = document.getElementById('jsonInput');
         const result = document.getElementById('result');
@@ -102,7 +97,6 @@
             const questions = jsonData.data[0].test;
             // nếu không chứa trường test thì lấy mảng data hiển thị điểm mỗi lần làm
             if (questions === undefined) {
-                openLink();
                 const data = jsonData.data;
                 data.forEach((item, index) => {
                     const questionDiv = document.createElement('div');
@@ -114,7 +108,6 @@
             } else {
                 // hiển thị các câu hỏi và đáp án
                 displayQuestions(questions);
-                openLink();
             }
 
         });
@@ -137,8 +130,11 @@
             });
         };
         function reloadPage() {
-            openLink();
-            location.reload();
+            jsonInput.value = '';
+            jsonInput.style.display = 'block';
+            getDeBtn.style.display = 'block';
+            document.getElementById('reloadBtn').style.display = 'none';
+            result.innerHTML = '';
         }
     </script>
 
