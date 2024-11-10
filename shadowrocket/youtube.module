@@ -1,3 +1,25 @@
+#!url=https://raw.githubusercontent.com/trantienvn/trantienvn.github.io/main/shadowrocket/youtube.module
+#!name=Xóa quảng cáo YouTube 
+#!desc=Xóa quảng cáo YouTube (Beta)
+########################################
+# > Tính năng
+# Xóa quảng cáo trên YouTube (bao gồm YouTube Music)
+# Xóa nút Tải lên ở dưới cùng của YouTube & nút chọn đoạn/nâng cấp ở YouTube Music
+# Thêm tính năng xem YouTube ở cửa sổ nhỏ (PIP - Picture in Picture)
+# Thêm tính năng dịch phụ đề trên YouTube (Cảm ơn @VirgilClyne)
+# Thêm tính năng phát nhạc nền cho YouTube (bao gồm YouTube Music)
+# Thêm tính năng dịch lời bài hát trên YouTube Music
+# > Lưu ý
+# Cấu hình này đã bao gồm các tính năng đầy đủ, không cần kết hợp với các quy tắc khác để tránh xung đột
+# Nếu ứng dụng không hỗ trợ `Mock`, có thể thay thế bằng `reject-200` hoặc `reject-img`
+# > Ghi công
+# @Choler & @DivineEngine & @app2smile
+# Kho lưu trữ gốc:  https://github.com/DivineEngine
+# Kho lưu trữ gốc:  https://github.com/Maasea
+# Kho lưu trữ gốc:  https://github.com/app2smile
+# Địa chỉ rewrite:  https://github.com/Moli-X/Resources/raw/main/Rewrite/YouTube.conf
+########################################
+
 [Rule]
 AND,((DOMAIN-SUFFIX,googlevideo.com), (PROTOCOL,UDP)),REJECT
 AND,((DOMAIN,youtubei.googleapis.com), (PROTOCOL,UDP)),REJECT
