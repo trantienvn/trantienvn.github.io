@@ -165,7 +165,6 @@
         const existingBtn = document.getElementById('tm-pdf-download-btn');
         if (existingBtn) {
             existingBtn.parentElement.remove(); // Xóa cả container
-            return;
         }
 
         // Tạo container
