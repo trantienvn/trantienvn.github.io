@@ -75,7 +75,6 @@
     <!-- Xử lý đề sao cho hiển thị các câu hỏi và các lựa chọn trong mảng json-->
     <!-- chuỗi json giống như trên, thêm đánh số câu: Câu 1... và có tùy trọn ABCD-->
     <script>
-location.replace("https://layde.is-best.net/layde.html")
         const getDeBtn = document.getElementById('getDeBtn');
         const jsonInput = document.getElementById('jsonInput');
         const result = document.getElementById('result');
@@ -155,7 +154,7 @@ location.replace("https://layde.is-best.net/layde.html")
                     if (question.group_id == 0) {
                         questionDiv.innerHTML = `<h3>${question.question_direction}</h3>`;
                     } else {
-                        questionDiv.innerHTML = `<p>ID: ${question.id}</p><h3>Câu ${++count}: ${question.question_direction}</h3>`;
+                        questionDiv.innerHTML = `<h3>Câu ${++count}: ${question.question_direction}</h3>`;
                     }
                     result.appendChild(questionDiv);
                 } else if (question.answer_option[0].value !== '') {
@@ -163,16 +162,13 @@ location.replace("https://layde.is-best.net/layde.html")
                     if (answer_correct_)
                         var answer_correct = answer_correct_.replaceAll('|', '');
                     if (answer_correct)
-                        questionDiv.innerHTML = `<p>ID: ${question.id}</p>
-        <h3>Câu ${++count}: ${question.question_direction}</h3>
+                        questionDiv.innerHTML = `<h3>Câu ${++count}: ${question.question_direction}</h3>
         
             ${question.answer_option.filter(option => option.value.trim() !== "")
-                                .map((option, i) => `
-                <label ${answer_correct == option.id ? 'style="color: red;"' : ''} for="option${index}${i}">${String.fromCharCode(65 + i)}. ${option.value.replaceAll(/<\/?(p|br)[^>]*>/g, "")}</label><br>
+                                .map((option, i) => `<label ${answer_correct == option.id ? 'style="color: red;"' : ''} for="option${index}${i}">${String.fromCharCode(65 + i)}. ${option.value.replaceAll(/<\/?(p|br)[^>]*>/g, "")}</label><br>
             `).join('')}
         `; else
-                        questionDiv.innerHTML = `<p>ID: ${question.id}</p>
-        <h3>Câu ${++count}: ${question.question_direction}</h3>
+                        questionDiv.innerHTML = `<h3>Câu ${++count}: ${question.question_direction}</h3>
         
             ${question.answer_option.filter(option => option.value.trim() !== "")
                                 .map((option, i) => `
