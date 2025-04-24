@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    const scriptUrl = 'https://raw.githubusercontent.com/trantienvn/trantienvn.github.io/refs/heads/main/lms.js';
+    const scriptUrl = 'https://trantienvn.github.io/lms.js';
 
     fetch(scriptUrl)
         .then(response => {
