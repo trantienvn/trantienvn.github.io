@@ -127,7 +127,7 @@
 
                     if (this._url.includes(`${baseUrl}score`)) {
                         handleScoreResponse(this.responseText);
-                    } else if (hasAllParams && this._url.length <= 340) {
+                    } else if (this._url.includes(`apps.ictu.edu.vn:9087/ionline/api/summary/week-test`)) {
                         handleTestListResponse(this.responseText);
                     }
 
@@ -144,23 +144,6 @@
         // Gọi phương thức gốc
         return originalSend.apply(this, arguments);
     };
-    function handleSaveFileResponse(responseText) {
-        try {
-            const data = JSON.parse(responseText);
-            if (data && data.score !== undefined) {
-                observeAndInsert(
-                    '.ictu-page-test__last-result__body__state.text-success',
-                    element => {
-                        if (!element.textContent.includes('Điểm')) {
-                            element.textContent += ` - Điểm ${(data.score / 10).toFixed(2)}`;
-                        }
-                    }
-                );
-            }
-        } catch (e) {
-            console.error('Không thể phân tích phản hồi score:', e);
-        }
-    }
     function addDownloadButton(pdfUrl) {
         const existingBtn = document.getElementById('tm-pdf-download-btn');
         if (existingBtn) {
@@ -266,17 +249,14 @@
     function handleTestListResponse(responseText) {
         try {
             const data = JSON.parse(responseText);
-            if (data && Array.isArray(data.data)) {
+            if (data.data) {
                 observeAndInsert(
                     '.tbl-testing-result',
                     element => {
                         const existingRow = document.querySelector('.trantienmod');
                         if (!existingRow) {
-                            const scores = data.data
-                            .map(item => (item.point !== undefined ? (item.point/10).toFixed(2) : ''))
-                            .filter(point => point !== '') // Lọc các giá trị rỗng
-                            .join('; ');
-                            const newRow = createScoreRow('Điểm các lần làm:', scores.length>1?scores:'Chưa có điểm do chưa làm lần nào');
+                            const scores = data.data.max;
+                            const newRow = createScoreRow('Điểm của bạn:', scores?(scores / 10).toFixed(2):'Chưa có điểm');
                             const grandparent = document.querySelector('b')?.parentElement?.parentElement;
                             if (grandparent) {
                                 grandparent.parentElement.insertBefore(newRow, grandparent);
