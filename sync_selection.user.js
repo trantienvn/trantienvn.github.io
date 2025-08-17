@@ -3,7 +3,9 @@
 // @namespace    http://tampermonkey.net/
 // @version      1.2
 // @description  Sync selected text với username bắt buộc
-// @match        *://lms.ictu.edu.vn/*
+// @author       Trần Tiến
+// @match        https://lms.ictu.edu.vn/*
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=ictu.edu.vn
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setValue
 // @grant        GM_getValue
