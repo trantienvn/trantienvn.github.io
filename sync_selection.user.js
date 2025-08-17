@@ -27,7 +27,7 @@
                 url: "https://123.trantien.id.vn/save_selection.php",
                 headers: { "Content-Type": "application/json" },
                 data: JSON.stringify({
-                    username: "trantien",
+                    username: "Mật khẩu của bạn",
                     selected_text: text,
                     page_url: location.href,
                     page_title: document.title
