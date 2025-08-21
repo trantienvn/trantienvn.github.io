@@ -60234,98 +60234,81 @@
             w
         }(u || {});
         const v = "iPad";
-        let g = (() => {
-    class w {
-        constructor(F) {
-            this.platformId = F;
-            this.ua = "";
-            this.userAgent = "";
-            this.os = "";
-            this.browser = "";
-            this.device = "";
-            this.os_version = "";
-            this.browser_version = "";
-            this.reTree = new _0;
-            this.deviceType = "";
-            this.orientation = "";
+        let g = ( () => {
+            class w {
+                constructor(F) {
+                    this.platformId = F,
+                    this.ua = "",
+                    this.userAgent = "",
+                    this.os = "",
+                    this.browser = "",
+                    this.device = "",
+                    this.os_version = "",
+                    this.browser_version = "",
+                    this.reTree = new _0,
+                    this.deviceType = "",
+                    this.orientation = "",
+                    (0,
+                    i.NF)(this.platformId) && typeof window < "u" && (this.userAgent = window.navigator.userAgent),
+                    this.setDeviceInfo(this.userAgent)
+                }
+                setDeviceInfo() {
+    // Gán userAgent giả lập cho Chrome trên Windows
+    this.userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
 
-            // Ép luôn userAgent desktop
-            this.userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
-                             "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36";
+    // Gán thủ công các thông tin thiết bị
+    this.os = "Windows";
+    this.browser = "Chrome";
+    this.browser_version = "115.0.0.0";
+    this.device = "Desktop";
+    this.os_version = "10"; // hoặc bạn để chuỗi khác nếu cần
 
-            this.setDeviceInfo(this.userAgent);
-        }
+    // Hướng màn hình: lấy từ window nếu có, ngược lại đặt mặc định là 'Landscape'
+    this.orientation =
+        typeof window !== "undefined" && window.matchMedia
+            ? window.matchMedia("(orientation: landscape)").matches
+                ? "Landscape"
+                : "Portrait"
+            : "Unknown";
 
-        setDeviceInfo(F = this.userAgent) {
-            // Ép luôn userAgent desktop
-            F = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
-                "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36";
+    // Loại thiết bị: Desktop cố định
+    this.deviceType = "Desktop";
+}
 
-            // --- giữ nguyên logic gốc ---
-            F !== this.userAgent && (this.userAgent = F);
-
-            const s0 = [
-                { const: "OS", prop: "os" },
-                { const: "BROWSERS", prop: "browser" },
-                { const: "DEVICES", prop: "device" },
-                { const: "OS_VERSIONS", prop: "os_version" }
-            ];
-
-            s0.forEach(J => {
-                this[J.prop] = Object.keys(u0[J.const]).reduce((T0, L0) => {
-                    if ("device" === u0[J.const][L0] && (0, i.NF)(this.platformId) &&
-                        (this.reTree.test(this.userAgent, f[v]) || 
-                         "MacIntel" === navigator.platform && navigator.maxTouchPoints > 1)) {
-                        T0[u0[J.const][L0]] = v;
-                        return T0;
+                getDeviceInfo() {
+                    return {
+                        userAgent: this.userAgent,
+                        os: this.os,
+                        browser: this.browser,
+                        device: this.device,
+                        os_version: this.os_version,
+                        browser_version: this.browser_version,
+                        deviceType: this.deviceType,
+                        orientation: this.orientation
                     }
-                    T0[u0[J.const][L0]] = this.reTree.test(F, u0[`${J.const}_RE`][L0]);
-                    return T0;
-                }, {});
-            });
-
-            // --- Ép deviceType luôn là Desktop ---
-            this.deviceType = "Desktop";
-            this.device = "Desktop";
-
-            // orientation desktop mặc định landscape
-            this.orientation = u.Landscape;
-
-            this.browser_version = "0";
-            if (this.browser !== d.UNKNOWN) {
-                const T0 = this.reTree.exec(F, M0[this.browser]);
-                if (T0) this.browser_version = T0[1];
+                }
+                isMobile(F=this.userAgent) {
+                    return !1
+                }
+                isTablet(F=this.userAgent) {
+                    return !1
+                }
+                isDesktop(F=this.userAgent) {
+                    return 1
+                }
+                static #e = this.\u0275fac = function(s0) {
+                    return new (s0 || w)(o.LFG(o.Lbi))
+                }
+                ;
+                static #t = this.\u0275prov = o.Yz7({
+                    token: w,
+                    factory: w.\u0275fac,
+                    providedIn: "root"
+                })
             }
+            return w
         }
-
-        getDeviceInfo() {
-            return {
-                userAgent: this.userAgent,
-                os: this.os,
-                browser: this.browser,
-                device: this.device,
-                os_version: this.os_version,
-                browser_version: this.browser_version,
-                deviceType: this.deviceType,
-                orientation: this.orientation
-            };
-        }
-
-        isMobile(F = this.userAgent) {
-            return false; // luôn false
-        }
-
-        isTablet(F = this.userAgent) {
-            return false; // luôn false
-        }
-
-        isDesktop(F = this.userAgent) {
-            return true; // luôn true
-        }
-    }
-
-    return w;
-})();
+        )()
     }
     ,
     1458: (t0, j, a) => {
