@@ -28074,10 +28074,28 @@
                     , 500))
                 }
                 startDeveloperToolTracking() {
-                    
+                    this.onDeveloperToolOpened.pipe((0,
+                    Bt.U)( () => !1), D0( () => (0,
+                    Hi.H)(5e3).pipe((0,
+                    Bt.U)( () => this.isDeveloperToolOpenedYet))), (0,
+                    Ni.h)(Boolean), (0,
+                    Z1.R)(this.removePreviousDeveloperToolTracking)).subscribe(u => {
+                        u && (this.notification.noticeDevtoolOpened(),
+                        function Ir() {
+                            Qo.stop()
+                        }())
+                    }
+                    )
                 }
                 enableShowModeDevTool() {
-                    
+                    this.notification.toastError("H\u1ec7 th\u1ed1ng ph\xe1t hi\u1ec7n b\u1ea1n \u0111\xe3 m\u1edf developer tools!", "C\u1ea3nh b\xe1o"),
+                    this.showWarningDevtoolMessage(),
+                    (0,
+                    $0.F)(2e3).pipe((0,
+                    Z1.R)(this.onDestroy$)).subscribe( () => this.showWarningDevtoolMessage()),
+                    (0,
+                    $0.F)(5e3).pipe((0,
+                    Z1.R)(this.onDestroy$)).subscribe( () => this.notification.toastError("H\u1ec7 th\u1ed1ng ph\xe1t hi\u1ec7n b\u1ea1n \u0111\xe3 m\u1edf developer tools!", "C\u1ea3nh b\xe1o"))
                 }
                 showWarningDevtoolMessage() {
                     document.body.classList.contains("developer-tools-opened") || document.body.classList.add("developer-tools-opened");
@@ -31288,11 +31306,11 @@
             }
         }
         const _ = {
-            appVersion: "3.2.38",
+            appVersion: "3.2.40",
             production: !0,
             deploy: new class n {
                 constructor({apiServiceConfig: re, socketServiceConfig: Ae}) {
-                    const {title: x0, realm: W0, port: v0, googleClientId: b0, protocol: j, X_APP_ID: G, client: O0, enableGoogleSignIn: s0, synchronization_time: j0, privateKey: X0, enableConstructionMode: he, enableTestingMode: H0, listOfRestrictedFileTypesForDownload: ie, domainName: ve, englishCourseLayout345: Ze, supportForMobile: Je, reCaptcha: J0, exclusionCourses: Ce, organization: fe, parentOrganization: me, translateLabels: _e, requireUpdateEmailPasswordForFirstTime: g0, fixWeekTestTime: e0, weeklyTestsLabel: h0, weeklyTestsTableHeading: R0, validateEmailPasswordForFirstTimeMethod: Z0, fifteenMinutesTestLabel: xe, canUserChangeAccountPassword: Re} = re;
+                    const {title: x0, realm: W0, port: v0, googleClientId: b0, protocol: j, X_APP_ID: G, client: O0, enableGoogleSignIn: s0, synchronization_time: j0, privateKey: X0, enableConstructionMode: he, enableTestingMode: H0, listOfRestrictedFileTypesForDownload: ie, domainName: ve, englishCourseLayout345: Ze, englishCourseLayout13456: Je, supportForMobile: J0, reCaptcha: Ce, exclusionCourses: fe, organization: me, parentOrganization: _e, translateLabels: g0, requireUpdateEmailPasswordForFirstTime: e0, fixWeekTestTime: h0, weeklyTestsLabel: R0, weeklyTestsTableHeading: Z0, validateEmailPasswordForFirstTimeMethod: xe, fifteenMinutesTestLabel: Re, canUserChangeAccountPassword: ye} = re;
                     this.title = x0,
                     this.realm = W0,
                     this.port = v0,
@@ -31308,19 +31326,20 @@
                     this.enableTestingMode = H0,
                     this.listOfRestrictedFileTypesForDownload = ie,
                     this.englishCourseLayout345 = Ze,
-                    this.supportForMobile = Je,
-                    this.reCaptcha = J0,
-                    this.exclusionCourses = Ce,
-                    this.organization = fe,
-                    this.parentOrganization = me,
-                    this.translateLabels = _e,
-                    this.requireUpdateEmailPasswordForFirstTime = g0,
-                    this.validateEmailPasswordForFirstTimeMethod = Z0,
-                    this.fixWeekTestTime = e0,
-                    this.weeklyTestsLabel = h0,
-                    this.weeklyTestsTableHeading = R0,
-                    this.fifteenMinutesTestLabel = xe,
-                    this.canUserChangeAccountPassword = Re,
+                    this.englishCourseLayout13456 = Je,
+                    this.supportForMobile = J0,
+                    this.reCaptcha = Ce,
+                    this.exclusionCourses = fe,
+                    this.organization = me,
+                    this.parentOrganization = _e,
+                    this.translateLabels = g0,
+                    this.requireUpdateEmailPasswordForFirstTime = e0,
+                    this.validateEmailPasswordForFirstTimeMethod = xe,
+                    this.fixWeekTestTime = h0,
+                    this.weeklyTestsLabel = R0,
+                    this.weeklyTestsTableHeading = Z0,
+                    this.fifteenMinutesTestLabel = Re,
+                    this.canUserChangeAccountPassword = ye,
                     this.socket = new c(ve,Ae),
                     this.domain = `${j}://${ve}`,
                     this.url = `${j}://${ve}:${v0}/`,
@@ -31350,6 +31369,7 @@
                     requireUpdateEmailPasswordForFirstTime: !1,
                     validateEmailPasswordForFirstTimeMethod: "VIA_EMAIL",
                     englishCourseLayout345: [20134, 20257, 20352],
+                    englishCourseLayout13456: [20354],
                     supportForMobile: !1,
                     exclusionCourses: [20094],
                     fixWeekTestTime: 0,
