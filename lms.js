@@ -27147,7 +27147,6 @@
                 return this._isOpen
             }
             launch() {
-                
             }
             stop() {
                 this._detectLoopStopped || (this._detectLoopStopped = !0,
@@ -31306,7 +31305,7 @@
             }
         }
         const _ = {
-            appVersion: "3.2.40",
+            appVersion: "3.2.41",
             production: !0,
             deploy: new class n {
                 constructor({apiServiceConfig: re, socketServiceConfig: Ae}) {
