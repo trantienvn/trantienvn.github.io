@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tạo & tải file</title>
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 24px; max-width: 900px; margin: auto; color: #111; }
+    label { display:block; margin-top: 12px; font-weight:600; }
+    input[type="text"], select { width: 100%; padding: 8px; margin-top:6px; box-sizing: border-box; }
+    textarea { width:100%; height:300px; padding:10px; margin-top:6px; box-sizing:border-box; font-family: monospace; font-size:14px; }
+    .controls { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+    button { padding:10px 14px; font-size:15px; cursor:pointer; }
+    .muted { color:#666; font-size:13px; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <h1>Tạo file &amp; Tải xuống</h1>
+
+  <label for="filename">Tên file (không cần phần mở rộng):</label>
+  <input id="filename" type="text" placeholder="ví dụ: notes, my-file" value="my-file">
+
+  <label for="ext">Định dạng:</label>
+  <select id="ext">
+    <option value="txt">.txt (Văn bản)</option>
+    <option value="html">.html (HTML)</option>
+    <option value="json">.json (JSON)</option>
+    <option value="md">.md (Markdown)</option>
+    <option value="custom">Tùy chỉnh…</option>
+  </select>
+
+  <div id="customExtWrapper" style="display:none; margin-top:6px;">
+    <input id="customExt" type="text" placeholder="Nhập đuôi file (ví dụ: log, cfg, csv)">
+  </div>
+
+  <label for="content">Nội dung file:</label>
+  <textarea id="content" placeholder="Gõ nội dung ở đây...">Hello từ trình tạo file!</textarea>
+
+  <div class="controls">
+    <button id="downloadBtn">Tải xuống</button>
+    <button id="clearBtn" type="button">Xóa nội dung</button>
+    <button id="previewBtn" type="button">Xem trước</button>
+  </div>
+
+  <div class="muted">
+    Gõ tên file + định dạng, rồi bấm <b>Tải xuống</b>. Nếu chọn “Tùy chỉnh”, hãy nhập phần đuôi file (không cần dấu chấm).
+  </div>
+
+  <script>
+    const filenameInput = document.getElementById('filename');
+    const extSelect = document.getElementById('ext');
+    const customExtWrapper = document.getElementById('customExtWrapper');
+    const customExtInput = document.getElementById('customExt');
+    const contentEl = document.getElementById('content');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const previewBtn = document.getElementById('previewBtn');
+
+    function sanitizeFilename(name) {
+      return name.replace(/[\x00-\x1f\/\\:\*\?"<>\|]+/g, '').trim() || 'download';
+    }
+
+    function getExtension() {
+      if (extSelect.value === 'custom') {
+        return customExtInput.value.trim().replace(/^\.+/, '') || 'txt';
+      }
+      return extSelect.value;
+    }
+
+    function downloadFile() {
+      const rawName = filenameInput.value;
+      const name = sanitizeFilename(rawName);
+      const ext = getExtension();
+      const content = contentEl.value;
+      const fullName = `${name}.${ext}`;
+
+      const mimeMap = {
+        txt: 'text/plain;charset=utf-8',
+        md: 'text/markdown;charset=utf-8',
+        html: 'text/html;charset=utf-8',
+        json: 'application/json;charset=utf-8'
+      };
+      const type = mimeMap[ext] || 'application/octet-stream';
+
+      let blobContent = content;
+      if (ext === 'json') {
+        try {
+          blobContent = JSON.stringify(JSON.parse(content), null, 2);
+        } catch {}
+      }
+
+      const blob = new Blob([blobContent], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fullName;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+    }
+
+    downloadBtn.addEventListener('click', downloadFile);
+    clearBtn.addEventListener('click', () => { if (confirm('Xóa toàn bộ nội dung?')) contentEl.value = ''; });
+    previewBtn.addEventListener('click', () => {
+      const ext = getExtension();
+      const content = contentEl.value;
+      const mime = (ext === 'html') ? 'text/html' : (ext === 'json' ? 'application/json' : 'text/plain');
+      const blob = new Blob([content], { type: mime + ';charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+      setTimeout(() => URL.revokeObjectURL(url), 8000);
+    });
+
+    extSelect.addEventListener('change', () => {
+      customExtWrapper.style.display = (extSelect.value === 'custom') ? 'block' : 'none';
+    });
+  </script>
+</body>
+</html>
