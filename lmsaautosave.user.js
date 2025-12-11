@@ -348,8 +348,6 @@
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                // Header này báo cho server biết ai đang gọi (tùy chọn)
-                'X-Source': 'Tampermonkey-Script'
             },
             body: JSON.stringify(jsonData)
         })
