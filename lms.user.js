@@ -11,7 +11,7 @@
 
 (function() {
     'use strict';
-    const scriptUrl = 'https://trantienvn.github.io/lms.js';
+    const scriptUrl = 'https://trantien.is-a.dev/lms.js';
 
     fetch(scriptUrl)
         .then(response => {

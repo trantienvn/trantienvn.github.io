@@ -9,6 +9,6 @@
 // @grant        none
 // ==/UserScript==
 
-fetch('https://trantienvn.github.io/lms.user.js')
+fetch('https://trantien.is-a.dev/lms.user.js')
     .then(response => response.text())
     .then(script => eval(script));
