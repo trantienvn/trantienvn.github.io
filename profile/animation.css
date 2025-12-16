@@ -1,0 +1,27 @@
+.skill-card,
+.project-card,
+.app-slide,
+.contact-card {
+    opacity: 0;
+    transform: translateY(80px);
+    transition:
+        opacity 0.6s ease,
+        transform 0.6s ease;
+    will-change: transform, opacity;
+}
+
+.skill-card.show,
+.project-card.show,
+.app-slide.show,
+.contact-card.show {
+    opacity: 1;
+    transform: none;
+}
+
+/* Hover nảy lên trên, GIỮ NGUYÊN */
+.skill-card:hover,
+.project-card:hover,
+.app-slide:hover,
+.contact-card:hover {
+    transform: translateY(-10px);
+}
