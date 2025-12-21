@@ -1,17 +1,18 @@
 // ==UserScript==
 // @name         TranTien
 // @namespace    http://tampermonkey.net/
-// @version      2025-03-31
+// @version      2025-12-21
 // @description  try to take over the world!
 // @author       You
 // @match        https://lms.ictu.edu.vn/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=ictu.edu.vn
 // @grant        none
+// @run-at       document-start
 // ==/UserScript==
 
 (function() {
     'use strict';
-    const scriptUrl = 'https://trantien.is-a.dev/lms.js';
+    /*const scriptUrl = 'https://trantien.is-a.dev/lms.js';
 
     fetch(scriptUrl)
         .then(response => {
@@ -26,7 +27,77 @@
     })
         .catch(error => {
         console.error('Lỗi khi tải hoặc thực thi script:', error);
+    });*/
+(function() {
+    'use strict';
+
+    const TARGET_FILE = "main.5cc384231db728ed.js";
+
+    // Mẫu tìm kiếm: }launch(){
+    // Regex giải thích:
+    // \}  -> Dấu đóng ngoặc nhọn của hàm trước
+    // \s* -> Có thể có khoảng trắng hoặc không
+    // launch -> Tên hàm
+    // \s*\(\)\s*\{ -> Dấu () và { mở hàm
+    const SEARCH_REGEX = /\}\s*launch\s*\(\)\s*\{/g;
+
+    // Chuỗi thay thế:
+    // 1. Đóng hàm trước: }
+    // 2. Định nghĩa launch mới rỗng: launch(){console.log("Đã chặn launch");return;}
+    // 3. Mở hàm rác để hứng code cũ: _trash(){
+    const REPLACE_STR = '}launch(){console.log("⛔ Launch blocked");return;}_trash(){';
+
+    console.log("🔥 Script chặn hàm Launch (Pattern }launch(){) đã sẵn sàng...");
+
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            mutation.addedNodes.forEach(node => {
+                if (node.tagName === 'SCRIPT' && node.src && node.src.includes(TARGET_FILE)) {
+console.log(node);
+                    console.log(`🛑 Phát hiện file mục tiêu: ${node.src}`);
+
+                    // Chặn thực thi ngay lập tức
+                    node.type = 'text/plain';
+                    node.parentElement.removeChild(node);
+
+                    // Tải và sửa nội dung
+                    fetch(node.src)
+                        .then(res => res.text())
+                        .then(text => {
+                            if (SEARCH_REGEX.test(text)) {
+                                console.log("✅ Đã tìm thấy pattern '}launch(){'. Đang patch...");
+
+                                // Thực hiện thay thế
+                                let newText = text.replace(SEARCH_REGEX, REPLACE_STR);
+
+                                // Inject code mới
+                                let newScript = document.createElement('script');
+                                newScript.type = 'module';
+                                newScript.textContent = newText;
+                                document.head.appendChild(newScript);
+
+                                console.log("🚀 Đã inject thành công!");
+                            } else {
+                                console.log("⚠️ Không tìm thấy pattern '}launch(){' chính xác.");
+                                // Chạy lại code gốc nếu không tìm thấy để tránh lỗi web
+                                let origScript = document.createElement('script');
+                                origScript.type = 'module';
+                                origScript.textContent = text;
+                                document.head.appendChild(origScript);
+                            }
+                        })
+                        .catch(e => console.error("Lỗi tải script:", e));
+                }
+            });
+        });
     });
+
+    observer.observe(document.documentElement, {
+        childList: true,
+        subtree: true
+    });
+
+})();
     const originalFetch = window.fetch;
 
     // Ghi đè fetch để phát hiện PDF
@@ -155,6 +226,23 @@
         // Gọi phương thức gốc
         return originalSend.apply(this, arguments);
     };
+    function handleSaveFileResponse(responseText) {
+        try {
+            const data = JSON.parse(responseText);
+            if (data && data.score !== undefined) {
+                observeAndInsert(
+                    '.ictu-page-test__last-result__body__state.text-success',
+                    element => {
+                        if (!element.textContent.includes('Điểm')) {
+                            element.textContent += ` - Điểm ${(data.score / 10).toFixed(2)}`;
+                        }
+                    }
+                );
+            }
+        } catch (e) {
+            console.error('Không thể phân tích phản hồi score:', e);
+        }
+    }
     function addDownloadButton(pdfUrl) {
         const existingBtn = document.getElementById('tm-pdf-download-btn');
         if (existingBtn) {
