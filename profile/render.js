@@ -105,8 +105,8 @@ const data = {
         {
             "icon": "🎵",
             "title": "TikTok",
-            "text": "@trantien.tech",
-            "link": "https://www.tiktok.com/@trantien.tech"
+            "text": "@trantien.it",
+            "link": "https://www.tiktok.com/@trantien.it"
         },
         {
             "icon": "💻",
