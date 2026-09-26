@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sắp xếp thời khóa biểu</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: auto;
+            padding: 24px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        /* FORM */
+
+        .form-card {
+            background: white;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,.06);
+            margin-bottom: 24px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns:
+                2fr
+                1.2fr
+                1fr
+                1fr
+                1.2fr
+                1fr
+                auto;
+            gap: 12px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            outline: none;
+            background: white;
+            font-size: 14px;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 11px 18px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-add {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: #1d4ed8;
+        }
+
+        /* TIMETABLE */
+
+        .schedule-card {
+            background: white;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,.06);
+            overflow-x: auto;
+        }
+
+        .schedule {
+            min-width: 1180px;
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .schedule th,
+        .schedule td {
+            border: 1px solid #e5e7eb;
+        }
+
+        .schedule th {
+            background: #111827;
+            color: white;
+            padding: 14px 8px;
+            text-align: center;
+        }
+
+        .schedule th:first-child,
+        .schedule td:first-child {
+            width: 140px;
+        }
+
+        .session {
+            height: 150px;
+            vertical-align: top;
+            padding: 8px;
+            background: #fafafa;
+        }
+
+        .session-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .session-subtitle {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        /* COURSE */
+
+        .course {
+            position: relative;
+            padding: 10px;
+            border-radius: 10px;
+            color: white;
+            min-height: 115px;
+            box-shadow: 0 3px 8px rgba(0,0,0,.12);
+            overflow-wrap: anywhere;
+        }
+
+        .course-code {
+            font-size: 11px;
+            opacity: .85;
+            margin-bottom: 4px;
+        }
+
+        .course-name {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .teacher {
+            font-size: 12px;
+            opacity: .95;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 7px;
+            right: 7px;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,.2);
+            color: white;
+            font-size: 15px;
+        }
+
+        .delete-btn:hover {
+            background: rgba(255,255,255,.35);
+        }
+
+        /* LIST */
+
+        .list-card {
+            background: white;
+            border-radius: 14px;
+            padding: 20px;
+            margin-top: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,.06);
+        }
+
+        .course-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+        }
+
+        .course-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 14px;
+        }
+
+        .course-select {
+            width: auto;
+            margin-right: 6px;
+        }
+
+        .data-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #1f2937;
+        }
+
+        .course-item-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .course-item-name {
+            font-weight: 700;
+        }
+
+        .course-item-code {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .course-info {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .empty {
+            color: #9ca3af;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .conflict {
+            outline: 3px solid #ef4444;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 900px) {
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .btn-add {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 12px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>📚 Sắp xếp thời khóa biểu</h1>
+    <div class="subtitle">
+        Thêm các môn học để tạo thời khóa biểu trực quan
+    </div>
+
+    <!-- FORM -->
+    <div class="form-card">
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label>Tên môn học</label>
+                <input
+                    id="courseName"
+                    type="text"
+                    placeholder="Ví dụ: Lập trình Web"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Mã môn</label>
+                <input
+                    id="courseCode"
+                    type="text"
+                    placeholder="Ví dụ: CNTT01"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Thứ</label>
+                <select id="day">
+                    <option value="2">Thứ 2</option>
+                    <option value="3">Thứ 3</option>
+                    <option value="4">Thứ 4</option>
+                    <option value="5">Thứ 5</option>
+                    <option value="6">Thứ 6</option>
+                    <option value="7">Thứ 7</option>
+                    <option value="8">Chủ nhật</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Buổi</label>
+                <select id="session">
+                    <option value="morning">🌅 Sáng</option>
+                    <option value="afternoon">☀️ Chiều</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Giảng viên</label>
+                <input
+                    id="teacher"
+                    type="text"
+                    placeholder="Ví dụ: Nguyễn Văn A"
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Lớp</label>
+                <input
+                    id="className"
+                    type="text"
+                    placeholder="Ví dụ: CNTT K24A"
+                >
+            </div>
+
+            <div class="form-actions">
+                <button id="submitCourseBtn" class="btn-add" onclick="addCourse()">
+                    + Thêm môn
+                </button>
+
+                <button id="cancelEditBtn" type="button" onclick="cancelEdit()" hidden>
+                    Hủy sửa
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+    <div class="schedule-card">
+
+        <table class="schedule">
+
+            <thead>
+                <tr>
+                    <th>Buổi</th>
+                    <th>Thứ 2</th>
+                    <th>Thứ 3</th>
+                    <th>Thứ 4</th>
+                    <th>Thứ 5</th>
+                    <th>Thứ 6</th>
+                    <th>Thứ 7</th>
+                    <th>CN</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <!-- SÁNG -->
+
+                <tr>
+
+                    <td class="session">
+                        <div class="session-title">
+                            🌅 BUỔI SÁNG
+                        </div>
+
+                        <div class="session-subtitle">
+                            Tiết 1 → Tiết 5
+                        </div>
+                    </td>
+
+                    <td id="cell-morning-2" class="session"></td>
+                    <td id="cell-morning-3" class="session"></td>
+                    <td id="cell-morning-4" class="session"></td>
+                    <td id="cell-morning-5" class="session"></td>
+                    <td id="cell-morning-6" class="session"></td>
+                    <td id="cell-morning-7" class="session"></td>
+                    <td id="cell-morning-8" class="session"></td>
+
+                </tr>
+
+                <!-- CHIỀU -->
+
+                <tr>
+
+                    <td class="session">
+                        <div class="session-title">
+                            ☀️ BUỔI CHIỀU
+                        </div>
+
+                        <div class="session-subtitle">
+                            Tiết 6 → Tiết 10
+                        </div>
+                    </td>
+
+                    <td id="cell-afternoon-2" class="session"></td>
+                    <td id="cell-afternoon-3" class="session"></td>
+                    <td id="cell-afternoon-4" class="session"></td>
+                    <td id="cell-afternoon-5" class="session"></td>
+                    <td id="cell-afternoon-6" class="session"></td>
+                    <td id="cell-afternoon-7" class="session"></td>
+                    <td id="cell-afternoon-8" class="session"></td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- COURSE LIST -->
+
+    <div class="list-card">
+
+        <h2>📋 Danh sách môn học</h2>
+
+        <div class="data-actions">
+            <button type="button" class="btn-add" onclick="exportCourses()">
+                Xuất JSON
+            </button>
+            <button type="button" class="btn-secondary" onclick="document.getElementById('importFile').click()">
+                Nhập JSON
+            </button>
+            <input id="importFile" type="file" accept=".json,application/json" hidden onchange="importCourses(event)">
+        </div>
+
+        <div id="courseList" class="course-list">
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let courses = JSON.parse(
+        localStorage.getItem("courses") || "[]"
+    ).map(course => ({
+        ...course,
+        className: course.className || "",
+        scheduled: course.scheduled !== false
+    }));
+
+    let editingCourseId = null;
+
+    // Màu cho các môn
+    const colors = [
+        "#2563eb",
+        "#7c3aed",
+        "#db2777",
+        "#dc2626",
+        "#ea580c",
+        "#ca8a04",
+        "#16a34a",
+        "#0891b2",
+        "#4f46e5",
+        "#9333ea"
+    ];
+
+
+    function save() {
+
+        localStorage.setItem(
+            "courses",
+            JSON.stringify(courses)
+        );
+
+    }
+
+
+    function addCourse() {
+
+        const details = {
+            name: document.getElementById("courseName").value.trim(),
+            code: document.getElementById("courseCode").value.trim(),
+            day: document.getElementById("day").value,
+            session: document.getElementById("session").value,
+            teacher: document.getElementById("teacher").value.trim(),
+            className: document.getElementById("className").value.trim()
+        };
+
+        if (!details.name || !details.code || !details.teacher) {
+            alert("Vui lòng nhập tên môn, mã môn và giảng viên.");
+            return;
+        }
+
+        const editingCourse = courses.find(course =>
+            course.id === editingCourseId
+        );
+
+        const movedToOccupiedSlot = editingCourse?.scheduled &&
+            (editingCourse.day !== details.day || editingCourse.session !== details.session) &&
+            courses.some(course =>
+                course.id !== editingCourseId &&
+                course.scheduled &&
+                course.day === details.day &&
+                course.session === details.session
+            );
+
+        if (movedToOccupiedSlot && !confirm(
+            "Khung giờ này đã có môn học. Bạn vẫn muốn lưu thay đổi?"
+        )) {
+            return;
+        }
+
+        if (editingCourse) {
+            Object.assign(editingCourse, details);
+        } else {
+            courses.push({
+                id: Date.now(),
+                ...details,
+                scheduled: true,
+                color: colors[courses.length % colors.length]
+            });
+        }
+
+        save();
+        clearForm();
+        render();
+
+    }
+
+
+    function clearForm() {
+
+        document.getElementById("courseName").value = "";
+        document.getElementById("courseCode").value = "";
+        document.getElementById("day").value = "2";
+        document.getElementById("session").value = "morning";
+        document.getElementById("teacher").value = "";
+        document.getElementById("className").value = "";
+        editingCourseId = null;
+        document.getElementById("submitCourseBtn").textContent = "+ Thêm môn";
+        document.getElementById("cancelEditBtn").hidden = true;
+
+    }
+
+
+    function editCourse(id) {
+
+        const course = courses.find(item => item.id === id);
+
+        if (!course) return;
+
+        editingCourseId = id;
+        document.getElementById("courseName").value = course.name;
+        document.getElementById("courseCode").value = course.code;
+        document.getElementById("day").value = course.day;
+        document.getElementById("session").value = course.session;
+        document.getElementById("teacher").value = course.teacher;
+        document.getElementById("className").value = course.className || "";
+        document.getElementById("submitCourseBtn").textContent = "Lưu thay đổi";
+        document.getElementById("cancelEditBtn").hidden = false;
+        document.getElementById("courseName").focus();
+
+    }
+
+
+    function cancelEdit() {
+
+        clearForm();
+
+    }
+
+
+    function deleteCourse(id) {
+
+        if (editingCourseId === id) {
+            clearForm();
+        }
+
+        courses =
+            courses.filter(course => course.id !== id);
+
+        save();
+
+        render();
+
+    }
+
+
+    function toggleCourseSchedule(id, scheduled) {
+
+        const course = courses.find(item => item.id === id);
+
+        if (!course || course.scheduled === scheduled) return;
+
+        const hasConflict = scheduled && courses.some(item =>
+            item.id !== id &&
+            item.scheduled &&
+            item.day === course.day &&
+            item.session === course.session
+        );
+
+        if (hasConflict && !confirm(
+            "Khung giờ này đã có môn học. Bạn vẫn muốn thêm môn này?"
+        )) {
+            renderList();
+            return;
+        }
+
+        course.scheduled = scheduled;
+        save();
+        render();
+
+    }
+
+
+    function render() {
+
+        // Xóa bảng
+
+        document.querySelectorAll(".session")
+            .forEach(cell => {
+
+                if (!cell.id) return;
+
+                if (cell.id.startsWith("cell-")) {
+                    cell.innerHTML = "";
+                }
+
+            });
+
+
+        // Render môn
+
+        courses.filter(course => course.scheduled).forEach(course => {
+
+            const cell =
+                document.getElementById(
+                    `cell-${course.session}-${course.day}`
+                );
+
+            if (!cell) return;
+
+
+            const div =
+                document.createElement("div");
+
+            div.className = "course";
+
+            div.style.background = course.color;
+
+
+            div.innerHTML = `
+
+                <button
+                    class="delete-btn"
+                    onclick="deleteCourse(${course.id})"
+                    title="Xóa môn"
+                >
+                    ×
+                </button>
+
+                <div class="course-code">
+                    ${escapeHTML(course.code)}
+                </div>
+
+                <div class="course-name">
+                    ${escapeHTML(course.name)}
+                </div>
+
+                <div class="teacher">
+                    👨‍🏫 ${escapeHTML(course.teacher)}
+                </div>
+
+                ${course.className ? `<div class="teacher">🏫 ${escapeHTML(course.className)}</div>` : ""}
+
+            `;
+
+
+            cell.appendChild(div);
+
+        });
+
+
+        renderList();
+
+    }
+
+
+    function renderList() {
+
+        const list =
+            document.getElementById("courseList");
+
+
+        if (courses.length === 0) {
+
+            list.innerHTML =
+                `<div class="empty">
+                    Chưa có môn học nào.
+                </div>`;
+
+            return;
+
+        }
+
+
+        list.innerHTML = courses.map(course => {
+
+            const dayName =
+                course.day === "8"
+                    ? "Chủ nhật"
+                    : `Thứ ${course.day}`;
+
+            const sessionName =
+                course.session === "morning"
+                    ? "🌅 Sáng"
+                    : "☀️ Chiều";
+
+
+            return `
+
+                <div class="course-item">
+
+                    <div class="course-item-header">
+
+                        <div>
+                            <label>
+                                <input
+                                    class="course-select"
+                                    type="checkbox"
+                                    ${course.scheduled ? "checked" : ""}
+                                    onchange="toggleCourseSchedule(${course.id}, this.checked)"
+                                >
+                                ${course.scheduled ? "Trong thời khóa biểu" : "Thêm vào thời khóa biểu"}
+                            </label>
+
+                            <div class="course-item-name">
+                                ${escapeHTML(course.name)}
+                            </div>
+
+                            <div class="course-item-code">
+                                ${escapeHTML(course.code)}
+                            </div>
+                        </div>
+
+                        <button
+                            onclick="editCourse(${course.id})"
+                            style="
+                                background:#dbeafe;
+                                color:#1d4ed8;
+                                padding:6px 10px;
+                            "
+                        >
+                            Sửa
+                        </button>
+
+                        <button
+                            onclick="deleteCourse(${course.id})"
+                            style="
+                                background:#fee2e2;
+                                color:#dc2626;
+                                padding:6px 10px;
+                            "
+                        >
+                            Xóa
+                        </button>
+
+                    </div>
+
+                    <div class="course-info">
+
+                        📅 ${dayName}<br>
+
+                        🕐 ${sessionName}<br>
+
+                        🏫 ${escapeHTML(course.className || "Chưa có lớp")}<br>
+
+                        👨‍🏫 ${escapeHTML(course.teacher)}
+
+                        ${course.scheduled ? "<br>✅ Đã có trong thời khóa biểu" : "<br>Chưa thêm vào thời khóa biểu"}
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+    }
+
+
+    function exportCourses() {
+
+        const backup = {
+            format: "timetable",
+            version: 1,
+            exportedAt: new Date().toISOString(),
+            courses
+        };
+
+        const file = new Blob(
+            [JSON.stringify(backup, null, 2)],
+            { type: "application/json" }
+        );
+        const url = URL.createObjectURL(file);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `thoi-khoa-bieu-${new Date().toISOString().slice(0, 10)}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+
+    }
+
+
+    function validateImportedCourses(data) {
+
+        if (!Array.isArray(data)) {
+            throw new Error("Tệp JSON không chứa danh sách môn học.");
+        }
+
+        const seenIds = new Set();
+        const validDays = ["2", "3", "4", "5", "6", "7", "8"];
+
+        return data.map((item, index) => {
+            if (!item || typeof item !== "object" || Array.isArray(item)) {
+                throw new Error(`Môn học thứ ${index + 1} không hợp lệ.`);
+            }
+
+            const name = typeof item.name === "string" ? item.name.trim() : "";
+            const code = typeof item.code === "string" ? item.code.trim() : "";
+            const teacher = typeof item.teacher === "string" ? item.teacher.trim() : "";
+            const day = String(item.day ?? "");
+            const session = item.session;
+
+            if (!name || !code || !teacher || !validDays.includes(day) ||
+                !["morning", "afternoon"].includes(session)) {
+                throw new Error(`Thông tin môn học thứ ${index + 1} bị thiếu hoặc không hợp lệ.`);
+            }
+
+            let id = Number(item.id);
+            if (!Number.isSafeInteger(id)) {
+                id = Date.now() + index;
+                while (seenIds.has(id)) id += 1;
+            }
+            if (seenIds.has(id)) {
+                throw new Error("Tệp JSON có mã môn học bị trùng.");
+            }
+            seenIds.add(id);
+
+            const color = typeof item.color === "string" && /^#[0-9a-f]{6}$/i.test(item.color)
+                ? item.color
+                : colors[index % colors.length];
+
+            return {
+                id,
+                name,
+                code,
+                day,
+                session,
+                teacher,
+                className: typeof item.className === "string" ? item.className : "",
+                scheduled: typeof item.scheduled === "boolean" ? item.scheduled : true,
+                color
+            };
+        });
+
+    }
+
+
+    async function importCourses(event) {
+
+        const input = event.target;
+        const file = input.files[0];
+        if (!file) return;
+
+        try {
+            const parsed = JSON.parse(await file.text());
+            const data = Array.isArray(parsed)
+                ? parsed
+                : parsed?.format === "timetable" && parsed.version === 1
+                    ? parsed.courses
+                    : null;
+            const importedCourses = validateImportedCourses(data);
+
+            if (courses.length > 0 && !confirm(
+                "Nhập JSON sẽ thay thế toàn bộ danh sách môn hiện tại. Tiếp tục?"
+            )) {
+                return;
+            }
+
+            courses = importedCourses;
+            clearForm();
+            save();
+            render();
+            alert(`Đã nhập ${courses.length} môn học.`);
+        } catch (error) {
+            alert(`Không thể nhập JSON: ${error.message}`);
+        } finally {
+            input.value = "";
+        }
+
+    }
+
+
+    function escapeHTML(text) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent = text;
+
+        return div.innerHTML;
+
+    }
+
+
+    // Hiển thị khi mở trang
+
+    render();
+
+</script>
+
+</body>
+</html>
