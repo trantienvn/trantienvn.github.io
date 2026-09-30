@@ -1,68 +1,115 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
   "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-
 <plist version="1.0">
 <dict>
     <key>PayloadContent</key>
     <array>
+
+        <!-- Google DNS -->
         <dict>
             <key>DNSSettings</key>
             <dict>
                 <key>DNSProtocol</key>
                 <string>HTTPS</string>
+                <key>ServerAddresses</key>
+                <array>
+                    <string>8.8.8.8</string>
+                    <string>8.8.4.4</string>
+                </array>
+                <key>ServerURL</key>
+                <string>https://dns.google/dns-query</string>
+            </dict>
+            <key>PayloadDescription</key>
+            <string>Google Public DNS</string>
+            <key>PayloadDisplayName</key>
+            <string>Google DNS</string>
+            <key>PayloadIdentifier</key>
+            <string>com.trantien.dns.google</string>
+            <key>PayloadOrganization</key>
+            <string>Trần Tiến</string>
+            <key>PayloadType</key>
+            <string>com.apple.dnsSettings.managed</string>
+            <key>PayloadUUID</key>
+            <string>9B4A1F2E-5D31-4C68-A7B9-100000000001</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+        </dict>
 
+        <!-- Cloudflare DNS -->
+        <dict>
+            <key>DNSSettings</key>
+            <dict>
+                <key>DNSProtocol</key>
+                <string>HTTPS</string>
+                <key>ServerAddresses</key>
+                <array>
+                    <string>1.1.1.1</string>
+                    <string>1.0.0.1</string>
+                </array>
+                <key>ServerURL</key>
+                <string>https://cloudflare-dns.com/dns-query</string>
+            </dict>
+            <key>PayloadDescription</key>
+            <string>Cloudflare Public DNS</string>
+            <key>PayloadDisplayName</key>
+            <string>Cloudflare DNS</string>
+            <key>PayloadIdentifier</key>
+            <string>com.trantien.dns.cloudflare</string>
+            <key>PayloadOrganization</key>
+            <string>Trần Tiến</string>
+            <key>PayloadType</key>
+            <string>com.apple.dnsSettings.managed</string>
+            <key>PayloadUUID</key>
+            <string>9B4A1F2E-5D31-4C68-A7B9-100000000002</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+        </dict>
+
+        <!-- AdGuard DNS -->
+        <dict>
+            <key>DNSSettings</key>
+            <dict>
+                <key>DNSProtocol</key>
+                <string>HTTPS</string>
                 <key>ServerAddresses</key>
                 <array>
                     <string>94.140.14.14</string>
                     <string>94.140.15.15</string>
                 </array>
-
                 <key>ServerURL</key>
                 <string>https://dns.adguard-dns.com/dns-query</string>
             </dict>
-
             <key>PayloadDescription</key>
             <string>AdGuard DNS - Chặn quảng cáo và tracker</string>
-
             <key>PayloadDisplayName</key>
             <string>AdGuard DNS</string>
-
             <key>PayloadIdentifier</key>
             <string>com.trantien.dns.adguard</string>
-
             <key>PayloadOrganization</key>
             <string>Trần Tiến</string>
-
             <key>PayloadType</key>
             <string>com.apple.dnsSettings.managed</string>
-
             <key>PayloadUUID</key>
-            <string>8E4A7D31-7B4C-4C7B-9D32-123456789001</string>
-
+            <string>9B4A1F2E-5D31-4C68-A7B9-100000000003</string>
             <key>PayloadVersion</key>
             <integer>1</integer>
         </dict>
+
     </array>
 
     <key>PayloadDescription</key>
-    <string>AdGuard DNS</string>
-
+    <string>Bộ cấu hình DNS Google, Cloudflare và AdGuard</string>
     <key>PayloadDisplayName</key>
-    <string>AdGuard DNS</string>
-
+    <string>DNS Profiles - Google Cloudflare AdGuard</string>
     <key>PayloadIdentifier</key>
-    <string>com.trantien.dns.adguard.profile</string>
-
+    <string>com.trantien.dns.profiles</string>
     <key>PayloadOrganization</key>
     <string>Trần Tiến</string>
-
     <key>PayloadType</key>
     <string>Configuration</string>
-
     <key>PayloadUUID</key>
-    <string>5B6C7D81-1234-4567-89AB-123456789002</string>
-
+    <string>9B4A1F2E-5D31-4C68-A7B9-100000000000</string>
     <key>PayloadVersion</key>
     <integer>1</integer>
 </dict>
